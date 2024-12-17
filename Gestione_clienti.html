@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Clienti</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+
+        header {
+            background-color: #4caf50;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .form-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-container h2 {
+            margin-bottom: 1rem;
+            color: #4caf50;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .form-actions {
+            text-align: right;
+        }
+
+        .form-actions button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-actions button:hover {
+            background-color: #45a049;
+        }
+
+        .table-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        table th, table td {
+            text-align: left;
+            padding: 0.8rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-buttons button {
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .edit-button {
+            background-color: #ffc107;
+            color: white;
+        }
+
+        .delete-button {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>Gestione Clienti</header>
+
+<div class="container">
+
+    <!-- Form per aggiungere cliente -->
+    <div class="form-container">
+        <h2>Aggiungi Cliente</h2>
+        <form id="clientForm">
+            <div class="form-group">
+                <label for="surname">Cognome o Società/Attività</label>
+                <input type="text" id="surname" name="surname" required>
+            </div>
+            <div class="form-group">
+                <label for="name">Nome</label>
+                <input type="text" id="name" name="name">
+            </div>
+            <div class="form-group">
+                <label for="description">Descrizione Attività</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="location">Luogo</label>
+                <input type="text" id="location" name="location">
+            </div>
+            <div class="form-group">
+                <label for="province">Provincia</label>
+                <input type="text" id="province" name="province">
+            </div>
+            <div class="form-group">
+                <label for="phone">Telefono</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+            </div>
+            <div class="form-group">
+                <label for="notes">Note</label>
+                <textarea id="notes" name="notes"></textarea>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="isBusiness" name="isBusiness">
+                    Società/Impresa (Partita IVA)
+                </label>
+            </div>
+            <div class="form-actions">
+                <button type="submit">Aggiungi</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tabella clienti -->
+    <div class="table-container">
+        <h2>Elenco Clienti</h2>
+        <table id="clientTable">
+            <thead>
+                <tr>
+                    <th>Cognome/Società</th>
+                    <th>Nome</th>
+                    <th>Descrizione</th>
+                    <th>Luogo</th>
+                    <th>Provincia</th>
+                    <th>Telefono</th>
+                    <th>Email</th>
+                    <th>Note</th>
+                    <th>Società</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Righe dinamiche -->
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    const clientForm = document.getElementById('clientForm');
+    const clientTableBody = document.querySelector('#clientTable tbody');
+
+    clientForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Ottieni dati dal form
+        const formData = new FormData(clientForm);
+        const client = {
+            surname: formData.get('surname'),
+            name: formData.get('name'),
+            description: formData.get('description'),
+            location: formData.get('location'),
+            province: formData.get('province'),
+            phone: formData.get('phone'),
+            email: formData.get('email'),
+            notes: formData.get('notes'),
+            isBusiness: formData.get('isBusiness') ? 'Sì' : 'No',
+        };
+
+        // Crea una nuova riga
+        const row = document.createElement('tr');
+        Object.values(client).forEach(value => {
+            const cell = document.createElement('td');
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+
+        // Aggiungi azioni
+        const actionCell = document.createElement('td');
+        actionCell.classList.add('action-buttons');
+        actionCell.innerHTML = `
+            <button class="edit-button">Modifica</button>
+            <button class="delete-button">Elimina</button>
+        `;
+        row.appendChild(actionCell);
+
+        // Aggiungi riga alla tabella
+        clientTableBody.appendChild(row);
+
+        // Resetta il form
+        clientForm.reset();
+    });
+
+    clientTableBody.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-button')) {
+            const row = event.target.closest('tr');
+            row.remove();
+        }
+    });
+</script>
+
+</body>
+</html>
